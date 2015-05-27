@@ -1,0 +1,70 @@
+\documentclass[10pt]{book}
+\usepackage[utf8]{inputenc}
+\usepackage{verbatim}
+\usepackage{amsmath}
+\usepackage{times}
+
+\begin{document}
+The Art of Computer Programming
+
+\chapter{Mathematical Preliminaries Redux}
+
+\section{Exercise 1.a}
+
+I've written a python script to check the probabilities of the dice (file redux.1a.py). They are, indeed, all equal to $5/9$.
+
+
+\section{Exercise 1.b}
+
+I've written a MIP model to find dice with the given probabilities (file redux.1b.cc). The MIP model is:
+
+\begin{align*}
+\text{Integer variable} &\; dice[3][6] \\
+\text{Integer variable} &\; count[3] \\
+\text{Binary variable} &\; greater[3][6] \\
+\end{align*}
+
+\begin{align*}
+0 &\le dice[i+1][k]-dice[i][j]+greater[i][j][k]\le 5 \\
+0 &\le count[i] -\sum_{j,k} greater[i][j][k] \le 0 \\
+21 &\le count[i] \le 36 \\
+-6 &\le dice[i][j] - dice[i][k] \le 0
+\end{align*}
+
+This model has a solution of $A=[3,3,3,3,3,6]$, $B=[2,2,2,5,5,5]$,
+$C=[1,4,4,4,4,4]$.
+
+\section{Exercise 1.c}
+
+I've modified the MIP model from 1.b to check solution for dices with $F_m$ sides (file redux.1c.cc). For $n=8$ the solution found is $A=[1,1,1,5,5,5,5,5]$, 
+$B=[3,3,3,3,3,3,3,3]$, $C=[2,2,2,2,2,8,8,8]$. This suggest a pattern of:
+
+\begin{align*}
+A&=[F_{m-2}\times 1, F_{m-1}\times 5] \\
+B&=[F_{m}\times 3] \\
+C&=[F_{m-1}\times 2, F_{m-2}\times 8] \\
+\end{align*}
+
+This will provide probabilities given by:
+\begin{align*}
+P(A>B)&=\frac{F_{m-1}F_{m}}{F_m^2}\\
+P(B>C)&=\frac{F_{m-1}F_{m}}{F_m^2}\\
+P(C>A)&=\frac{F_{m-2}F_{m}+F_{m-1}F_{m-2}}{F_m^2}\\
+\end{align*}
+
+$P(A>B)$ and $P(B>C)$ will readily simplify to the desired probabilities, let's prove $P(C>A)$ does as well. We'll start with Cassini's identity:
+
+$$F_mF_{m-2}=F_{m-1}^2+(-1)^n$$
+
+Substituting it into the original expression:
+
+\begin{align*}
+F_{m-2}F_{m}+F_{m-1}F_{m-2}&=F_{m-1}^2+(-1)^n+F_{m-1}F_{m-2}\\
+&=F_{m-1}(F_{m-1}+F_{m-2})+(-1)^n\\
+&=F_{m-1}F_m+(-1)^n\\
+&=F_{m-1}F_m\pm 1
+\end{align*}
+
+QED
+
+\end{document}

@@ -85,7 +85,7 @@ class AlgorithmW {
     update();
 W2:
     if (!r) {
-      //dump();
+      ///dump();
       return true;
     }
     if (t == N) {
@@ -94,7 +94,7 @@ W2:
     int j = f[rnd.rand(0, r - 1)];
     int c = smallest_cost(j);
     int l;
-    if (c == 0 || (c == 1 && rnd.real(0, 1) >= p)) {
+    if (c == 0 || (c >= 1 && rnd.real(0, 1) >= p)) {
       l = choose_from_cost(j, c);
     } else {
       l = rnd.rand(0, data.clauses[j].size() - 1);

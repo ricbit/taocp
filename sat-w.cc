@@ -85,7 +85,7 @@ class AlgorithmW {
     update();
 W2:
     if (!r) {
-      ///dump();
+      //dump();
       return true;
     }
     if (t == N) {
@@ -192,10 +192,10 @@ int main() {
   SATData data;
   data.read();
   int steps = 0;
-  int M = 2000000;
+  int M = 20000;
   for (int i = 0; i < M; i++) {
-    AlgorithmW w(data, 0.57);
-    w.run(2000000);
+    AlgorithmW w(data, 0.001);
+    w.run(20000);
     steps += w.t;
   }
   //cout << (p.run(20000000)? "found" : "not found");

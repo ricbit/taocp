@@ -4,7 +4,7 @@ import sys
 m = int(sys.argv[1])
 a = int(sys.argv[2])
 p = float(sys.argv[3])
-T = 20000
+T = 200000
 acc = 0
 for _ in xrange(T):
     c = a

@@ -192,9 +192,9 @@ int main() {
   SATData data;
   data.read();
   int steps = 0;
-  int M = 20000;
+  int M = 200000;
   for (int i = 0; i < M; i++) {
-    AlgorithmW w(data, 0.001);
+    AlgorithmW w(data, 0.5);
     w.run(20000);
     steps += w.t;
   }

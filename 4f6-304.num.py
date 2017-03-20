@@ -10,6 +10,14 @@ def ga(m, a, p, q):
     return F(a, q - p) - F(
         2 * p * q * F(p, q) ** m * (F(q , p) ** a - 1), (q - p) ** 2)
 
+def g_mod(m, pl):
+    p = F(pl, 2)
+    q = 1 - p
+    acc = 0
+    for a in xrange(0, 2*m):
+        acc += binomial(2 * m + 2, a + 1) * (1 + ga(m, m-abs(a-m), p, q))
+    return F(1, 2 ** (2 * m + 2)) * acc
+
 def g(m, pl):
     p = F(pl, 2)
     q = 1 - p

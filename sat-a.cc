@@ -12,13 +12,14 @@ using namespace std;
 typedef unsigned int uint;
 
 struct SATData {
-  SATData(uint variables_, uint literals_)
-      : variables(variables_), literals(literals_), 
+  SATData(uint variables_, uint literals_, uint clauses_)
+      : variables(variables_), literals(literals_), clauses(clauses_),
         size(2 + 2 * variables + literals),
         L(size), F(size), B(size), C(size) {
   }
-  uint variables, literals, size;
+  uint variables, literals, clauses, size;
   vector<uint> L, F, B, C;
+  unordered_map<uint, string> name;
 };
 
 class SATParser {
@@ -52,7 +53,7 @@ class SATParser {
   }
 
   SATData build() {
-    SATData data(name.size(), literals);
+    SATData data(name.size(), literals, clauses.size());
     vector<int> varcount(name.size(), 0);
     int pos = data.L.size() - 1;
     int clause_number = 1;
@@ -89,6 +90,7 @@ class SATParser {
       }
       data.F[literal] = last;
     }
+    data.name = value;
     return data;
   }
 
@@ -106,6 +108,37 @@ class SATParser {
   unordered_map<uint, string> value;
   vector<vector<uint>> clauses;
   uint literals{0};
+};
+
+class AlgorithmA {
+ public:
+  AlgorithmA(SATData& data_) 
+      : data(data_), m(data.clauses), n(data.variables) {
+  }
+
+  bool run() {
+    int a = data.clauses, d = 1;
+    int l, p;
+
+A2: 
+    l = 2 * d;
+    if (data.C[l] <= data.C[l + 1]) {
+      l++;
+    }
+    m[d] = (l & 1) + 4 * (data.C[l ^ 1] == 0);
+    if (data.C[l] == a) {
+      return true;
+    }
+A3:
+    p = data.F[l ^1];
+    while (p >= 2 * n - 2) {
+      int j = data.C[p];
+      int i = 
+    }
+  }
+ private:
+  SATData& data;
+  vector<int> m;
 };
 
 class Random {

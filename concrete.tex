@@ -1,0 +1,479 @@
+\documentclass[10pt]{book}
+\usepackage[utf8]{inputenc}
+\usepackage{verbatim}
+\usepackage{amsmath}
+\usepackage{times}
+
+\begin{document}
+Concrete Mathematics
+
+\chapter{Recurrent Problems}
+
+\section{Exercício 1.1}
+
+Esse raciocínio é válido para $n\geq3$, mas quando há só dois cavalos, os dois conjuntos são disjuntos e não dá pra aplicar a transitividade que prova que as pontas são iguais.
+
+\section{Exercício 1.2}
+
+Suponha que há três postes, A, B e M. Movimentos diretos de A para B são proibidos. Seja $T(n)$ o mínimo de movimentos para mover n discos de A para B.
+
+\begin{enumerate}
+  \item Apenas 1 disco.
+  Você move o disco de A para M, e de M para B. Logo, $T(1)=2$.
+
+  \item Há $n+1$ discos. A menor seqüência de movimentos é:
+  \begin{enumerate}
+    \item Move n discos de A para B, $T(n)$ movimentos.
+    \item Move 1 disco de A para M, $1$ movimento.
+    \item Move n discos de B para A, $T(n)$ movimentos.
+    \item Move 1 disco de M para B, $1$ movimento.
+    \item Move n discos de A para B, $T(n)$ movimentos.
+  \end{enumerate}
+  Total para mover $n+1$ discos: $T(n+1) = 3T(n)+2$
+\end{enumerate}
+
+Temos então a recorrência completa:
+
+\begin{align*}
+   T(1)&=2 \\
+   T(n+1)&=3T(n)+2 \\
+   T(n+1)+1&=3T(n)+3 
+\end{align*}
+
+Vamos definir $U(n)$: 
+
+\begin{align*}
+  U(n) & =T(n)+1 \\
+  U(1) & =T(1)+1=3 \\
+  U(n+1) & =T(n+1)+1=3T(n)+3=3U(n) \\
+  U(n) & =3^n \\
+  T(n) & =3^n-1
+\end{align*}
+
+\section{Exercício 1.3 }
+
+Preenchendo de baixo pra cima, o maior disco pode ser colocado qualquer um dos três postes, depois o próximo disco pode ser colocado em qualquer um dos três, e assim por diante, logo a quantidade total de arranjos válidos é $3^n$. Mas o mínimo de movimentos é $T(n)=3^n-1$, então o total de estados visitados é $1+T(n)=3^n$. Portanto, as regras acima passam por todos os estados válidos.
+
+\section{Exercício 1.4}
+
+Suponha que queremos partir de uma configuração válida qualquer A para outra configuração válida B. Seja $T(n)$ o número de movimentos para mover $n$ discos de A para B.
+
+\begin{enumerate}
+
+\item Apenas $1$ disco. 
+Nesse caso, ou o disco já está na posição desejada, ou basta um movimento para colocá-lo no lugar desejado. Logo: $T(1)\leq 1$
+
+\item Há $n+1$ discos. 
+ Como é uma configuração válida, então o maior disco está embaixo dos outros. 
+
+  \begin{enumerate}
+
+   \item Se o último disco já está na posição correta, então você só precisa mover os $n$ discos restantes, logo o número máximo de movimentos é $T(n)$. 
+   \item Se precisamos mover o último disco do poste 1 para o poste 2 (sem perda de generalidade), então todos os outros discos precisam estar no poste 3. 
+     \begin{enumerate}
+       \item Movemos os $n$ discos da configuração válida A para o poste 3, em $T(n)$ movimentos. 
+       \item Movemos o maior disco do poste 1 para o poste 2 em $1$ movimento. 
+       \item Movemos os $n$ discos do poste 3 para a configuração válida B, em $T(n)$ movimentos. 
+     \end{enumerate}
+  Portanto, neste caso, o número máximo de movimentos é $2T(n)+1$. 
+  \end{enumerate}
+
+Juntando os dois subcasos: 
+
+\[T(n+1)\leq max(T(n),  2T(n)+1)\leq 2T(n)+1 \]
+\end{enumerate}
+
+Resolvendo a recorrência, temos que: 
+
+ \[T(n)\leq 2^n-1 \]
+
+\section{Exercício 1.5}
+
+Cada novo círculo corta um círculo anterior em no máximo 2 pontos. O quarto círculo, então, faz no máximo oito cortes, e por isso pode definir no máximo sete novas regiões. Somando as sete já existentes, temos no máximo 14 regiões. Mas precisaríamos de 16 regiões para fazer um diagrama de Venn, logo é impossível fazer isso com círculos. 
+
+\section{Exercício 1.6}
+
+Se existem $n$ retas no plano, uma nova reta pode fazer no máximo $n$ intersecções, e as duas pontas geram regiões abertas. Logo uma nova reta gera no máximo $n-2$ regiões fechadas. A recorrência é:
+
+\begin{align*}
+ T(1)&=0 \\
+ T(n+1)&=T(n)+n-2 
+\end{align*}
+
+ A solução é quadrática, então podemos usar o método do repertório. Tabelando valores pequenos: 
+
+\begin{tabular}{c c}
+Retas   &Regiões fechadas        \\
+1       &0       \\
+2       &0       \\
+3       &1      
+\end{tabular} 
+
+\begin{align*}
+ T(n)&=\alpha n^2+\beta n+\gamma \\
+ 0&=\alpha+\beta+\gamma \\
+ 0&=4\alpha+2\beta+\gamma \\
+ 1&=9\alpha+3\beta+\gamma 
+\end{align*}
+
+Resolvendo o sistema: 
+
+\begin{align*}
+  \alpha&=\frac{1}{2} \\
+  \beta&=-\frac{3}{2} \\
+  \gamma&=1 
+\end{align*}
+
+Portanto: 
+
+\[ T(n)=\frac{1}{2}n^2-\frac{3}{2}n+1=\frac{n^2-3n+2}{2} \]
+
+\section{Exercício 1.7}
+ 
+Essa indução não tem base. $J(2)=1$, $J(1)=1$, e portanto $H(1)=J(2)-J(1)=1$.
+
+\section{Exercício 1.8}
+
+Calculando os primeiros valores pela definição: 
+
+\begin{align*}
+ Q(0)&=\alpha \\
+ Q(1)&=\beta \\
+ Q(2)&=\frac{1+\beta}{\alpha}  \\
+ Q(3)&=\frac{1+\frac{1+\beta}{\alpha}}{\beta}=\frac{1+\alpha+\beta}{\alpha\beta} \\
+ Q(4)&=\frac{1+\frac{1+\alpha+\beta}{\alpha\beta}}{\frac{1+\beta}{\alpha}}=\frac{1+\alpha+\beta+\alpha\beta}{\beta(1+\beta)}=\frac{(1+\beta)+\alpha(1+\beta)}{\beta(1+\beta)}=\frac{1+\alpha}{\beta}  \\
+ Q(5)&=\frac{1+\frac{1+\alpha}{\beta}}{\frac{1+\alpha+\beta}{\alpha\beta}}=\frac{1+\alpha+\beta}{\beta}.\frac{\alpha\beta}{1+\alpha+\beta}=\alpha  \\
+ Q(6)&=\frac{1+\alpha}{\frac{1+\alpha}{\beta}}=\beta 
+\end{align*}
+
+  Como $Q(5)=Q(0)$ e $Q(6)=Q(1)$, e $Q(n)$ depende só dos dois valores anteriores, então $Q(n)$ é periódica e dada por $Q(n)=Q(n \mod 5)$, com os cinco primeiros casos como acima. 
+
+\section{  Exercício 1.9 }
+
+\begin{enumerate}
+\item Vamos definir a notação:
+
+\begin{align*}
+ P&=\prod_1^{n-1}x_k \\
+ S&=\sum_1^{n-1}x_k 
+\end{align*}
+
+Nossa hipótese de indução é: 
+
+\[ P.x_n\leq(\frac{S+x_n}{n})^n \]
+
+Vamos escolher o próximo $x$ como sendo: 
+
+\[ x_n=\frac{S}{n-1} \]
+
+Nesse caso, podemos substituir: 
+
+\begin{align*}
+ P.\frac{S}{n-1}&\leq\left( \frac{S+\frac{S}{n-1}}{n} \right)^n=\left( \frac{S\left(\frac{n}{n-1}  \right)}{n} \right)^n=\left( \frac{S}{n-1} \right)^n  \\
+ P.\frac{S}{n-1}&=\left(\frac{S}{n-1}\right)^n \\
+ P&\leq\left(\frac{S}{n-1}\right)^{n-1} 
+\end{align*}
+
+ Logo, se a desigualdade vale para $n$ números, vale também para $n-1$ números. 
+
+
+\item Agora nós queremos provar a desigualdade para $2n$ números. Vamos separar esses números em dois grupos, $a_1$ até $a_n$, e $b_1$ até $b_n$. Novamente vamos definir: 
+
+\begin{align*}
+  P&=\left(\displaystyle\prod_1^{n}a_k\right)\cdot \left(\displaystyle\prod_1^{n}b_k\right) \\
+  S&=\left(\displaystyle\sum_1^{n}a_k\right)+\left(\displaystyle\sum_1^{n}b_k\right) 
+\end{align*}
+
+Vamos definir ainda $Q$ como sendo o produto das médias dois a dois: 
+
+\[ Q=\displaystyle\prod_{1}^{n}\left(\frac{a_k+b_k}{2}\right) \]
+
+Podemos aplicar a propriedade $P(2)$ dois a dois: 
+
+\begin{align*}
+ a_1.b_1&\leq\left(\frac{a_1+b_1}{2}\right)^2 \\
+ ... \\
+ a_n.b_n&\leq\left(\frac{a_n+b_n}{2}\right)^2
+\end{align*}
+
+  Se multiplicarmos todas as desigualdades acima: 
+
+\[ P\leq Q^2 \]
+
+Agora vamos aplicar a propriedade $P(n)$ a todas as médias: 
+
+\begin{align*}
+ \left(\frac{a_1+b_1}{2}\right)...\left(\frac{a_n+b_n}{2}\right)&\leq\left( \frac{\frac{S}{2}}{n} \right)^n \\
+  Q&\leq\left(\frac{S}{2n}\right)^n 
+\end{align*}
+
+Juntando as duas equações: 
+
+\begin{align*}
+  P&\leq Q^2 \leq \left( \left(\frac{S}{2n}\right)^n \right)^2 \\
+  P&\leq\left(\frac{S}{2n}\right)^{2n}  
+\end{align*}
+
+  Logo, se a propriedade vale para $2$ números e para $n$ números, então vale também para $2n$ números. 
+
+\item Usando o item b, você pode partir de $P(2)$ até a primeira potência de dois maior ou igual a $n$. Se $n$ for uma potência de dois, está provado. Se não for, você usa o item a e retrocede até $n$, provando assim o caso geral. 
+\end{enumerate}
+
+\section{  Exercício 1.10 }
+
+Suponhamos que os três postes, no sentido horário, são A, B e M. Por simetria, o número de movimentos de A para B é o mesmo de B para M e de M para A. Vale o mesmo no sentido oposto. Vamos definir então: 
+
+\begin{align*}
+ Q&=T_{AB}=T_{BM}=T_{MA}  \\
+ R&=T_{BA}=T_{AM}=T_{MB} 
+\end{align*}
+
+ Logo, para achar $Q(n)$, temos que mover $n$ discos de A para B: 
+
+\begin{enumerate}
+  \item Move $n-1$ discos de A para M. 
+  \item Move $1$ disco de A para B. 
+  \item Move $n-1$ discos de M para B. 
+\end{enumerate}
+
+\[ Q(n)=T_{AB}(n)=T_{AM}(n-1)+1+T_{MB}(n-1)=2R(n-1)+1  \]
+
+ Para achar $R(n)$, vamos mover $n$ discos de B para A: 
+
+\begin{enumerate}
+  \item Move $n-1$ discos de B para A. 
+  \item Move $1$ disco de B para M. 
+  \item Move $n-1$ discos de A para B. 
+  \item Move $1$ disco de M para A. 
+  \item Move $n-1$ discos de B para A. 
+\end{enumerate}
+
+\begin{align*}
+ R(n)&=T_{BA}(n)=T_{BA}(n-1)+1+T_{AB}(n-1)+1+T_{BA}(n-1)=2R(n-1)+Q(n-1)+2  \\
+ R(n)&=(2R(n-1)+1)+Q(n-1)+1=Q(n)+Q(n-1)+1 
+\end{align*}
+
+\section{  Exercício 1.11 }
+
+\begin{enumerate}
+ \item Se discos de tamanhos iguais são indistinguíveis, então a solução da torre dupla é a mesma solução da torre simples, bastando apenas mover dois discos por vez. Por isso, o número de movimentos é exatamente o dobro do tradicional: 
+
+\[ T(n)=2(2^n-1) \]
+
+ \item Suponha que você tem $2n$ discos, pintados de vermelho e azul. Na solução final queremos os vermelhos em cima dos azuis. Uma estratégia para mover os discos de A para B é a seguinte: 
+
+  \begin{enumerate}
+    \item Move $2(n-1)$ discos de A para B.  
+    \item Move o disco vermelho de A para M. 
+    \item Move $2(n-1)$ discos de B para M. 
+    \item Move o disco azul de A para B. 
+    \item Move $2(n-1)$ discos de M para A. 
+    \item Move o disco vermelho de M para B. 
+    \item Move $2(n-1)$ discos de A para B. 
+  \end{enumerate}
+
+Você pode mover os $2(n-1)$ discos usando a estratégia do item a, nesse caso: 
+
+\[ R(n)=4T(n)+3=4(2^{n+1}-2)+3=2^{n+3}-5 \]
+
+\end{enumerate}
+
+\section{  Exercício 1.12 }
+
+Queremos calcular $A(m_1, ..., m_n)$. A estratégia é: 
+
+\begin{enumerate}
+  \item Move $A(m_2, ..., m_n)$ de A para M. 
+  \item Move $m_1$ de A para B. 
+  \item Move $A(m_2, ..., m_n)$ de M para A. 
+\end{enumerate}
+
+Logo: 
+
+\begin{align*}
+ A(m_1,...,m_n)&=m_1+2A(m_2,...,m_n)=m_1+2m_2+4m_3+...  \\
+ A(m_1,...,m_n)&=\displaystyle\sum_1^n2^{k-1}m_k 
+\end{align*} 
+
+\section{  Exercício 1.13 }
+
+ Se você esticar os dois pontos de inflexão do zig-zag para bem longe, ele fica parecido com três retas paralelas onde você juntou duas das pontas. Quando você junta essas duas pontas, você está tirando duas regiões do plano. Então o número de regiões definidos por $n$ zig-zags é igual ao número de regiões definidos por $3n$ retas paralelas, menos $2n$ regiões.
+
+\[ Z(n)=P(n)-2n \]
+
+ Com um conjunto de três retas paralelas definimos $4$ regiões. 
+
+\[ P(1)=4\]
+
+Cada reta paralela adicional intersecta todas as outras. Assim, se há $L(n)$ linhas já desenhadas, então cada reta adiciona $L(n)+1$ novos grupos. Como para $n$ triplas de paralelas temos $3n$ retas, então: 
+
+\[  L(n)=3n \]
+
+ O número de novos grupos gerados quando você adiciona a n-ésima tripla de paralelas é: 
+
+\[ G(n)=3(L(n-1)+1)=3(3(n-1)+1)=9n-6 \]
+
+Logo, o número de regiões no total quando você tem n triplas de paralelas é: 
+
+\[ P(n)=P(n-1)+G(n)=P(n-1)+9n-6 \]
+
+ A recorrência pode ser resolvida diretamente: 
+
+\begin{align*}
+ P(n)&=4+\displaystyle\sum_2^n(9n-6)=4-(9-6)+\sum_1^n(9n-6)=1+\sum_1^n(9n-6) \\
+ P(n)&=1-6n+9\displaystyle\sum_1^nn=1-6n+9\left(\frac{n(n+1)}{2}\right)=\frac{9}{2}n^2-\frac{3}{2}n+1 
+\end{align*}
+
+ Por fim:
+
+\[ Z(n)=P(n)-2n=\frac{9}{2}n^2-\frac{7}{2}n+1 \]
+
+\section{  Exercício 1.14 }
+
+Com um único plano definimos $2$ regiões:
+
+\[ P(1)=2 \]
+
+Agora suponha que temos $n-1$ planos. Vamos adicionar um novo plano em posição geral. A intersecção de outro plano com esse plano forma uma reta. O número de novas regiões do espaço então é o número de novas regiões nesse plano de projeção. Daí: 
+
+\begin{align*}
+ P(n+1)&=P(n)+L(n)=P(n)+\frac{n^2+n+2}{2} \\
+ P(n+1)&=2+\sum_1^n\frac{k^2+k+2}{2}=2+\frac{1}{2}\left(2n+\frac{n(n+1)}{2}+\frac{n\left(n+\frac{1}{2}\right)(n+1)}{3}\right)  \\
+ P(n+1)&=\frac{n^3+3n^2+8n+12}{6} 
+\end{align*}
+
+\section{  Exercício 1.15 }
+
+É fácil ver que ele segue a mesma recorrência do Josephus normal, mudando só a condição inicial:
+
+\begin{align*}
+  I(2)&=2 \\
+  I(3)&=1 \\
+  I(2n)&=2I(n)-1 \\
+  I(2n+1)&=2I(n)+1
+\end{align*}
+
+Podemos também ver que $I(n)=1$ sempre que n for $3$,$6$,$12$... ou seja, sempre que for três vezes uma potência de dois. Logo, a solução genérica é:
+
+\[ I(3.2^n+k)=2k+1 \]
+
+\section{  Exercício 1.16 }
+
+Vamos primeiro fixar $\gamma=0$. Dessa maneira, $g(n)$ pode resolvido usando 
+a transformação (1.18) do livro, ou seja:
+
+\[ f((b_m b_{m-1} ... b_0)_2) = 
+   (\alpha \beta_{b_{m-1}} ... \beta_{b_0})_3 \]
+
+Dessa maneira, conseguimos diretamente achar três das funções:
+
+\begin{align*}
+  g(n) &= A(n)\alpha + B(n)\beta_0 + C(n)\beta_1 + D(n)\gamma \\
+  A(2^m+k) &= 3^m \\
+  B(2^m+k) &= F_{2,3}(inverse_3(k)) = F_{2,3}(2^m-1-k) \\
+  C(2^m+k) &= F_{2,3}(k)
+\end{align*}
+
+Onde definimos $F_{2,3}(x)$ como sendo a função que transforma os bits de $x$ da base $2$ para base $3$, e $inverse_3(x)$ é a função que inverte os bits de $x$.
+
+Para achar $D(n)$, vamos fixar $g(n)=n$ e usar o repertório:
+
+\begin{align*}
+  g(1) &= 1 = \alpha \\
+  g(2n) &= 2n = 3n + \gamma n + \beta_0 \\
+  g(2n+1) &= 2n+1 = 3n + \gamma n + \beta_1
+\end{align*}
+
+Logo, uma solução possível é $\alpha=1$, $\beta_0=0$, $\beta_1=1$, e $\gamma=-1$. Substituindo novamente conseguimos achar a função restante, $D(n)$.
+
+\begin{align*}
+  g(n) &= A(n)\alpha + B(n)\beta_0 + C(n)\beta_1 + D(n)\gamma \\
+  n &= A(n) + C(n) - D(n) \\
+  D(n) &= A(n) + C(n) - n  \\
+  D(2^m+k) &= 3^m + F_{2,3}(k) -n
+\end{align*}
+
+\section{  Exercício 1.17 }
+
+Antes de começar, notemos que $\frac{n(n+1)}{2} - n = \frac{n(n-1)}{2}$. 
+Vamos considerar quatro pinos, ABCD, começando com os pinos em A. Tendo os 
+quatro pinos à disposição, podemos mover os $\frac{n(n-1)}{2}$ pinos de cima 
+para o pino B usando $W\left(\frac{n(n-1)}{2}\right)$ movimentos. 
+Temos agora $n$ discos em A que podem ser movidos para C em 
+$T(n)$ movimentos, já que o pino B está ocupado. Por fim, como todos os discos em B são menores que os discos em C, então podemos mover os restantes em 
+mais $W\left(\frac{n(n-1)}{2}\right)$ movimentos. No total, temos:
+
+\[ W\left(\frac{n(n+1)}{2}\right) \leq 2W\left(\frac{n(n-1)}{2}\right) + T(n) \]
+
+Para achar a forma fechada, vamos antes definir $Q(n)=W(\frac{n(n+1)}{2})$, e notemos também que $Q(1)=W(1)=T(1)=1$. A recorrência é então:
+
+\begin{align*}
+  Q(1) &\leq T(1) \\
+  Q(n) &\leq 2Q(n-1) + T(n)
+\end{align*}
+
+Abrindo alguns casos na mão, é fácil conjecturar que:
+
+\[ Q(n) \leq \sum_{k=1}^{n}2^{n-k}T(k) \]
+
+A prova por indução é simples:
+
+\begin{align*}
+  Q(1) &\leq T(1) \\
+  Q(n) &\leq \sum_{k=1}^{n}2^{n-k}T(k) \\
+   &\leq \left( \sum_{k=1}^{n-1}2^{n-k}T(k) \right) + T(n) \\
+   &\leq 2 \left( \sum_{k=1}^{n-1}2^{n-1-k}T(k) \right) + T(n) \\
+   &\leq 2Q(n-1) + T(n)
+\end{align*}
+
+Agora podemos resolver o somatório:
+
+\begin{align*}
+ Q(n) &\leq \sum_{k=1}^{n}2^{n-k}T(k) \\
+      &\leq \sum_{1\leq k \leq n}2^{n-k}(2^k-1) \\
+      &\leq \sum_{1\leq k \leq n}(2^n - 2^{n-k}) \\
+      &\leq n2^n - \sum_{1\leq k \leq n}2^{n-k} \\
+      &\leq n2^n - \sum_{0\leq i \leq n-1}2^i \\
+      &\leq n2^n - (2^n -1) \\
+      &\leq 2^n(n-1) +1
+\end{align*}
+
+Chegamos assim ao resultado $Q(n)=W(\frac{n(n+1)}{2}) \leq 2^n(n-1)+1$.
+
+\chapter{Sums}
+
+\section{Exercício 2.1}
+
+Não há nenhum $k$ que satisfaça à inequação, logo a soma é vazia.
+
+\begin{align*}
+\sum_{k=4}^0 q_k = \sum_{4\leq k \leq 0} q_k = 0
+\end{align*}
+
+\section{Exercício 2.2}
+
+Separando em três casos:
+
+\begin{enumerate}
+\item Para $x>0$: $x.(1 - 0) = x$
+
+\item Para $x<0$: $x.(0 - 1) = -x$
+
+\item Para $x=0$: $0.(0-0) = 0$
+\end{enumerate}
+
+Logo a expressão dada é o módulo de $x$.
+
+\section{Exercício 2.3}
+
+\begin{enumerate}
+
+\item $\sum_
+
+
+\end{enumerate}
+
+
+
+
+\end{document}

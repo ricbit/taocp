@@ -1,0 +1,365 @@
+\documentclass[10pt]{book}
+\usepackage[utf8]{inputenc}
+\usepackage{verbatim}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{times}
+
+\begin{document}
+\title{Fascicle 6 Satisfiability}
+\author{Ricardo Bittencourt}
+\maketitle
+
+\chapter{4.2.2.2 Satisfiability}
+
+\section{MPR-105}
+
+(Random walk on an n-cycle.) Given integers $a$ and $n$, with $0\le a\le n$, let $N$ be minimum such that $(a+(-1)^{X_1}+(-1)^{X_2}+\cdots+(-1)^{X_N}) \mod n=0$, where $X_1$, $X_2$, $\dots$ is a sequence of independent random bits. Find the generating function $g_a=\sum_{k=0}^\infty \Pr(N=k)z^k$. What are the mean and variance of N?
+\begin{proof}
+
+If $a=0$ or $a=n$, then the sum is already zero and we need no bits at all. In those cases, $N=0$ and therefore $g_0=1$ and $g_n=1$. If $a$ is between $0$ and $n$, then one extra random bit added will reduce the problem to either $a+1$ or $a-1$ with equal probability. Therefore, $g_a=z\left(g_{a-1}/2 + g_{a+1}/2\right)$. Also, if $N$ is a solution for $a$, then $N$ is also a solution for $n-a$ (just complement the $X_i$ bits). Therefore, $g_a=g_{n-a}$.
+
+Let's break the problem in two cases. First suppose $N=2m$. In this case $g_{m-1}=g_{2m-(m-1)}=g_{m+1}$. We also have $g_m=z/2(g_{m+1}+g_{m-1})=z g_{m-1}$. Now let's define $G_a=g_{m-a}/ g_m$. From this definition:
+
+\begin{align*}
+  G_0 &= \frac{g_m}{g_m} = 1 \\
+  G_1 &= \frac{g_{m-1}}{g_m} = \frac{g_m}{z}\times\frac{1}{g_m} = \frac{1}{z} \\
+  G_a &= \frac{g_{m-a}}{g_m} \\
+      &= \frac{1}{g_m}\times\left(\frac{2g_{m-(a-1)}}{z}-g_{m-(a-2)}\right)\\
+      &= \frac{2}{z}G_{a-1}-G_{a-2}
+\end{align*}
+
+If we set $x=1/z$, then it's clear that $G_a(x)$ has exactly the same definition of $T_a(x)$, the Chebyshev polynomials of the first kind. We can find out a closed form for $g_a$ if we set $a=m$ and remember that $g_0=1$:
+
+\begin{align*}
+  G_a(1/z) &= T_a(1/z) \\
+  \frac{g_{m-a}}{g_m} &= T_a(1/z) \\
+  \frac{g_{m-m}}{g_m} &= T_m(1/z) \\
+  g_m &= \frac{1}{T_m(1/z)} \\
+  g_{m-a} &= \frac{T_a(1/z)}{T_m(1/z)} \\
+  g_a &= \frac{T_{m-a}(1/z)}{T_m(1/z)}
+\end{align*}
+
+The mean of $N$ is given by $g_a'(1)$. We start with the generating function for Chebyshev polynomials. We also define $TZ(z)=T(1/z)$ for simplicity.
+
+\begin{align*}
+  T(w) &= \sum_{n\ge 0}T_n(z)w^n=\frac{1-wz}{1-2wz+w^2} \\
+  TZ(z) &= T(1/z) = \frac{z-w}{z-2w+zw^2}\\
+  TZ'(z) &= \frac{w(w^2-1)}{(z+w(wz-2))^2} \\
+  TZ'(1) &= \frac{w(w^2-1)}{(1+w(w-2))^2} = \frac{w(1+w)}{(w-1)^3}\\
+  E[T_n(1/z)] &= [w^n]TZ'(1) = -n^2
+\end{align*}
+
+Probability generating functions have the property that $E[F/G]=E[F]-E[G]$, therefore:
+
+\begin{align*}
+  E[g_a] &= E[T_{m-a}(1/z)] - E[T_m(1/z)] = \\
+    &= (m-a)^2 - m^2 \\
+    &= 2ma - a^2 \\
+    &= a(n-a)
+\end{align*}
+
+The variance of $N$ is given by $g_a''(1)+g_a'(1)-g'a(1)^2$:
+
+\begin{align*}
+  TZ''(z) &= \frac{-2w(w^4-1)}{(z+w(wz-2))^3} \\
+  TZ''(1) &= \frac{-2w(w^4-1)}{(1+w(w-2))^3} \\
+  T_n''(1) &= [w^n]TZ''(1) = \frac{n^2(5+n^2)}{3} \\
+  V[T_n(1/z)] &= \frac{n^2(5+n^2)}{3}-n^2-n^4=\frac{2(n^2-n^4)}{3}\\
+  V[g_a] &= V[T_{m-a}(1/z)]-V[T_m(1/z)] \\
+         &= \frac{2((m-a)^2-(m-a)^4-m^2+m^4)}{3} \\
+         &= \frac{a(n-a)(n^2-2a(n-a)-2)}{3}
+\end{align*}
+
+Now the second case. Suppose $N=2m-1$, in this case $g_{2m-1-m}=g_{m-1}=g_m$. Defining $G_a=g_{m-a}/g_m$ we have $G_0=G_1=1$, which is not readily a Chebyshev polynomial. However, since the recursion is the same, we can rewrite it as a linear combination of Chebyshev polynomials:
+
+\begin{align*}
+\begin{pmatrix} 1 & 1 \\ z & 2z\end{pmatrix}
+\begin{pmatrix}a \\ b\end{pmatrix}
+  &=
+\begin{pmatrix}1 \\ 1\end{pmatrix} \\
+\begin{pmatrix}a \\ b\end{pmatrix}
+  &=
+\begin{pmatrix} 2-\frac{1}{z} \\ \frac{1}{z} -1\end{pmatrix}
+\end{align*}
+
+We conclude that $G_a=(2-1/z)T_a(z)+(1/z-1)U_a(z)$. This linear combination can be applied to the generating functions as well, since $z$ is just a constant in relation to $w$:
+
+\begin{align*}
+  G(w) &= \left(2-\frac{1}{z}\right)\sum_{n\ge 0}T_n w^n + 
+  \left(\frac{1}{z}-1\right)\sum_{n\ge 0}U_n w^n \\
+  &=
+  \left(2-\frac{1}{z}\right)\left(\frac{1-wz}{1-2wz+w^2}\right) + 
+  \left(\frac{1}{z}-1\right)\left(\frac{1}{1-2wz+w^2}\right) \\
+  &= \frac{1+w-2wz}{1+w^2-2wz} \\
+  GZ(z)&=G(1/z) = \frac{w(z-2)+z}{z+w(wz-2)} \\
+  GZ'(z) &= \frac{2(w-1)w^2}{(z+w(wz-2))^2} \\
+  GZ'(1) &= \frac{2w^2}{(w-1)^3} \\
+  E[G_n] &= [w^n]GZ'(1) = n(1-n) \\
+  E[g_a] &= E[g_{m-a}] - E[g_m] \\
+   &= (m-a)(1-m+a)-m(1-m) \\
+   &= a(2m-1-a)\\
+   &= a(n-a)
+\end{align*}
+
+The mean of $N$ turns out to have the same value as in the previous case. Now for the variance:
+
+\begin{align*}
+  GZ''(z) &= \frac{4(w-1)w^2(1+w^2)}{(z+w(wz-2))^3} \\
+  GZ''(1) &= -\frac{4(w^2+w^4)}{(w-1)^5} \\
+  G_n''(1) &= [w^n]GZ''(1) = 
+  \frac{n(n^3-2n^2+5n-4)}{3} \\
+  V[G_n] &= 
+  \frac{n(n^3-2n^2+5n-4)}{3} +n(1-n) - (n(1-n))^2 \\
+  &=-\frac{n(1+n(1+2n(n-2)))}{3} \\
+  V[g_a] &= V[g_{m-a}] - V[g_a] \\
+         &= \frac{a(2m-1-a)(2a^2-1+a(2-4m)+4(m-1)m)}{3} \\
+         &= \frac{a(n-a)(n^2-2a(n-a)-2)}{3}
+\end{align*}
+
+The variance also has the same value as the previous case.
+
+\end{proof}
+
+\section{Exercise 7.2.2.2 304}
+
+Consider the 2SAT problem with $n(n-1)$ clauses $(\bar{x}_j \vee x_k)$ for all $j\neq k$. Find the generating function for the number of flips taken by Algorithms P and W.
+
+\begin{proof}
+
+  Suppose the vector $x_i$ has exactly $a$ bits one. In this case, for each bit one, there are $n-a$ clauses violated, one for each bit zero. The total of violated clauses is $a(n-a)$ and this value is zero only for $a=0$ and $a=n$, which are the two solutions for the problem.
+
+  Algorithm P will pick the first violated clause and flip a random literal on it. The violated clauses are always of the form $(\bar{x}_i \vee x_j)$ so it will change the state to $a+1$ or $a-1$ with equal probabilities. The generating function for the number of flips, thus, is exactly the same as studied in exercise MPR-105, whose mean is $g_a'(1)=a(n-a)$. 
+  
+  However, the $a$ in this algorithm are not uniform, in fact there are ${n \choose a}$ vectors whose sum is $a$. The generating function for the entire algorithm is $g(z)=2^{-n} \sum_{0\le a\le n}{n \choose a}g_a$ and the mean is:
+
+  \begin{align*}
+    g'(1) &= 2^{-n} \sum_{0\le a\le n} a(n-a){n \choose a} \\
+       &= 2^{-n} \sum_{0\le a\le n} an{n-1 \choose a} \\
+       &= n2^{-n} \sum_{0\le a\le n} (n-1){n-2 \choose a-1} \\
+       &= n(n-1)2^{-n} \sum_{0\le a\le n-2} {n-2 \choose a} \\
+       &= n(n-1)2^{-n} (2^{n-2}) \\
+       &= \frac{n(n-1)}{4} = \frac{1}{2}{n\choose 2} \\
+  \end{align*}
+
+  For Algorithm W, notice that the cost for all bits one is the same, $a-1$, and the cost for every bit zero is $n-a-1$. For the analysis we can assume $a\le n/2$, since the problem is symmetric (just flip all bits). In this case, the greedy choice is always to flip a bit one to zero.
+
+  The greedy choice is only taken with certainty when $a=1$, since the cost is zero, in this case the generating function is $g_1=z$. For all other cases, let $p'$ be the greedy parameter of Algorithm W, we'll have the greedy choice taken with probability $1-p'$, and the random choice with probability $p'$, in which case it goes to zero or to one with equal probability. Let $p=p'/2$ and $q=1-p$, the generating function in those cases will be $g_a=z(q g_{a-1}+p g_{a+1})$.
+
+  Let's break into some cases now. When $p'=0$, all choices are greedy, and we have $g_a=z^a$ for $a\le n/2$, and $g_a=z^{n-a}$ otherwise. We can remove the conditional by writing $g_a=z^{n/2-\left|a-n/2\right|}$. The overall generating function is $g=\sum_a 2^{-n}{n\choose a}z^{n/2-\left|a-n/2\right|}$ and the mean is:
+
+\begin{align*}
+  g'(1) 
+  &= \sum_a 2^{-n}{n\choose a}\left(n/2-\left|a-n/2\right|\right) \\
+  &= n2^{-1-n}\sum_a{n\choose a} - 2^{-n}\sum_a{n\choose a}\left|a-n/2\right| \\
+  &= n2^{-1-n}2^n - 2^{-n}\sum_a{n\choose a}\left|a-n/2\right| \\
+  &= \frac{n}{2} - 2^{-n}\sum_a{n\choose a}\left|a-n/2\right|
+\end{align*}
+
+The remaining summation can be solved with the following identity from 1.2.7-68, using its $p=1/2$:
+\newcommand{\mceil}{\left\lceil\frac{n}{2}\right\rceil}
+
+\begin{align*}
+  \sum_k{n\choose k}p^k(1-p)^{n-k}\left|k-np\right|&=2\lceil np\rceil {n\choose\lceil np\rceil}p^{\lceil np\rceil}(1-p)^{n+1-\lceil np \rceil} \\
+  \sum_a{n\choose a}2^{-n}\left|a-\frac{n}{2}\right|&=2\mceil {n\choose\mceil}2^{-n-1} \\
+  2^{-n} \sum_a{n\choose a}\left|a-\frac{n}{2}\right|&=2^{-n}\mceil {n\choose\mceil} \\
+\end{align*}
+
+Substituting back in $g'(1)$:
+
+\begin{align*}
+  g'(1) &= \frac{n}{2}-2^{-n}\mceil{n\choose\mceil}
+\end{align*}
+
+The binomial is either ${n\choose n/2}$ or ${n\choose n/2+1}$. Since ${n\choose n/2+1}={n\choose n/2}(1+2/n)$, then ${n\choose\lceil n/2\rceil}={n\choose n/2}(1+O(1/n))$. We can expand an asymptotic now:
+
+\begin{align*}
+  g'(1) &= \frac{n}{2}-2^{-n}\mceil{n\choose\mceil} \\
+    &= \frac{n}{2}-2^{-n}\left(\frac{n}{2}+O(1)\right)
+      {n\choose n/2}\left(1+O(1/n)\right) \\
+    &= \frac{n}{2}-2^{-n}\left(\frac{n}{2}+O(1)\right)
+      \frac{2^n}{\sqrt{n\pi/2}}\left(1+O(1/n)\right)\left(1+O(1/n)\right) \\
+      &= \frac{n}{2}-\sqrt{\frac{2}{n\pi}}\left(\frac{n}{2}+O(1)\right)
+      \left(1+O(1/n)\right) \\
+      &= \frac{n}{2}-\sqrt{\frac{2}{n\pi}}\left(\frac{n}{2}+O(1)\right)\\
+      &= \frac{n}{2}-\sqrt{\frac{n}{2\pi}}+O\left(\frac{1}{\sqrt{n}}\right) \\
+      &= \frac{n}{2}-\sqrt{\frac{n}{2\pi}}+O\left(1\right) \\
+\end{align*}
+
+When $p'=1$, then $p=q=1/2$, and we have almost the same case as Algorithm P, except that for $a=1$ and $a=n-1$ the choice is always greedy. We can use the same formulas if we use $n-2$ as the length of the vector. The mean becomes:
+
+\begin{align*}
+  g'(1) &= 2^{-n}\sum_{1\le a\le n-1}{n\choose a}(1+(a-1)((n-2)-(a-1)))\\
+   &= 2^{-n}\sum_{1\le a\le n-1}{n\choose a}(2-a^2+n(a-1))\\
+   &= \frac{2n-4}{2^n}+2^{-n}\sum_{0\le a\le n}{n\choose a}(2-a^2+n(a-1))\\
+   &= \frac{2n-4}{2^n}+2+2^{-n}\sum_{0\le a\le n}{n\choose a}(-a^2+n(a-1))\\
+   &= \frac{2n-4}{2^n}+2-n+2^{-n}\sum_{0\le a\le n}{n\choose a}(-a^2+na)\\
+\end{align*}
+
+We now need two simple summations:
+
+\begin{align*}
+  \sum_{0\le a\le n}a{n\choose a} &= \sum_a n{n-1\choose a-1}
+  =n\sum_a {n-1\choose a}=n 2^{n-1} \\
+  \sum_{0\le a\le n}a^2{n\choose a} &= \sum_a a n{n-1\choose a-1} \\
+  &=\sum_a (a+1) n{n-1\choose a}\\
+  &= \sum_a an{n-1\choose a}+\sum_a n{n-1\choose a}\\
+  &= \sum_a n(n-1){n-2\choose a-1}+(n 2 ^{n-1})\\
+  &= n(n-1)2 ^{n-2}+n2 ^{n-1}\\
+  &= n(n+1)2^{n-2}
+\end{align*}
+
+The total mean is:
+
+\begin{align*}
+   g'(1) &= \frac{2n-4}{2^n}+2-n+
+  2^{-n}  \left( -n(n+1)2^{n-2} +n^2 2^{n-1} \right) \\
+  &= \frac{2n-4}{2^n}+2-n+\frac{n(n-1)}{4}\\
+  &= \frac{2n-4}{2^n}+2+\frac{n(n-5)}{4}\\
+\end{align*}
+
+Let's consider now the case $0\le p'\le 1$. Again we can consider the size to be $n-2$ to account for the forcibly greedy choice when $a=0$ or $a=n$. The same reasoning used in MPR-105 also applies here. We have $g_0=1$, $g_{n-a}=g_a$, $g_a=z(qg_{a-1}+pg_{a+1})$. 
+
+We need to break into two subcases. When $n=2m$, this implies $g_{m-1}=g_{m+1}$ and $z g_{m-1}=g_m$. Again we define $G_a=g_{m-a}/g_m$, which implies $G_0=1$ and $G_1=1/z$, and apply this definition to the recursion:
+
+\begin{align*}
+  g_a &= z(qg_{a-1}+pg_{a+1}) \\
+  g_{m-a} &= z(qg_{m-a-1}+pg_{m-a+1}) \\
+  g_{m-a} &= z(qg_{m-(a+1)}+pg_{m-(a-1)}) \\
+  G_a &= z(qG_{a+1}+pG_{a-1}) \\
+  G_{a-1} &= z(qG_a+pG_{a-2}) \\
+  zqG_a &= G_{a-1}-zpG_{a-2} \\
+  G_a &= \frac{1}{zq}G_{a-1}-\frac{p}{q}G_{a-2}
+\end{align*}
+
+We can add the initial conditions to this recursion and find the generating function. For $a=0$:
+
+\begin{align*}
+  G_0 &= 1 \\
+  1 &= \frac{1}{zq}\times 0-\frac{p}{q}\times 0 +k_0[a=0] \\
+  k_0 &= 1
+\end{align*}
+
+For $a=1$:
+\begin{align*}
+  G_1 &= \frac{1}{z}\\
+  \frac{1}{z} &= \frac{1}{zq}\times 1-\frac{p}{q}\times 0 +k_1[a=1] \\
+  k_1 &= \frac{1}{z}-\frac{1}{zq} = \frac{1-q}{zq}=-\frac{p}{zq} 
+\end{align*}
+
+In the general case:
+\begin{align*}
+  G_a &= \frac{1}{zq}G_{a-1}-\frac{p}{q}G_{a-2} -\frac{p}{zq}[a=1]+[a=0] \\
+  G &= \frac{w}{zq}G-\frac{pw^2}{q}G-\frac{pw}{zq}+1 \\
+  G\left(\frac{zq-w+pzw^2}{zq}\right) &= \frac{zq-pw}{zq} \\
+  G &= \frac{zq-pw}{zq-w+pzw^2}
+\end{align*}
+
+We can find the mean for $G$ now:
+
+\begin{align*}
+  \left.\frac{dG}{dz}\right\rvert_{z=1}  
+  &= \frac{w(p^2w^2-q^2)}{(q+pw^2-w)^2} \\
+  &= \frac{w(pw-q)(pw+q)}{(w-1)^2(pw-q)^2}\\
+  &= \frac{w(pw+q)}{(w-1)^2(pw-q)}
+\end{align*}
+
+This generating function can be opened in parts:
+
+\begin{align*}
+  \frac{w(pw+q)}{pw-q}
+    &= \frac{\frac{p}{q}w^2+w}{\frac{p}{q}w-1} \\
+    &= -\frac{p}{q}w^2\frac{1}{1-\frac{p}{q}w}-w\frac{1}{1-\frac{p}{q}w} \\
+    &= -\frac{p}{q}w^2\left(\sum_{n\ge 0}\left(\frac{p}{q}\right)^nw^n\right)
+       -w\left(\sum_{n\ge 0}\left(\frac{p}{q}\right)^nw^n\right)\\
+    &= -\sum_{n\ge 0}\left(\frac{p}{q}\right)^{n+1}w^{n+2}
+       -\sum_{n\ge 0}\left(\frac{p}{q}\right)^nw^{n+1} \\
+    &= -\sum_{n\ge 2}\left(\frac{p}{q}\right)^{n-1}w^{n}
+       -\sum_{n\ge 1}\left(\frac{p}{q}\right)^{n-1}w^{n} \\
+    &= -\sum_{n\ge 2}\left(\frac{p}{q}\right)^{n-1}w^{n}
+       -w -\sum_{n\ge 2}\left(\frac{p}{q}\right)^{n-1}w^{n} \\
+    &= -w -\sum_{n\ge 2}2\left(\frac{p}{q}\right)^{n-1}w^{n} \\
+  [w^n]\left(\frac{w(pw+q)}{pw-q}\right) 
+  &= -2\left(\frac{p}{q}\right)^{n-1}[n\ge 2]-[n=1]
+\end{align*}
+
+At this point we can use the accumulation property:
+
+\begin{align*}
+  [w^a]\left(\frac{w(pw+q)}{(w-1)^2(pw-q)}\right) 
+  &= \sum_{0\le b\le a}\;\sum_{0\le n\le b}
+     -2\left(\frac{p}{q}\right)^{n-1}[n\ge 2]-[n=1]\\
+  &= \sum_{0\le b\le a}-1-2\sum_{2\le n\le b}
+     \left(\frac{p}{q}\right)^{n-1}\\
+  &= \sum_{0\le b\le a}-1-2\sum_{1\le n\le b-1}
+     \left(\frac{p}{q}\right)^{n}\\
+  &= \sum_{0\le b\le a}-1
+     -2\frac{\left(\frac{p}{q}\right)^{b-1+1}-\frac{p}{q}}{\frac{p}{q}-1}\\
+  &= \sum_{0\le b\le a}-1
+     -2\frac{q\left(\frac{p}{q}\right)^b-p}{p-q}\\
+     &= \sum_{0\le b\le a}\frac{p+q}{p-q}
+     -\frac{2q}{p-q}\left(\frac{p}{q}\right)^b
+\end{align*}
+
+Continuing:
+\begin{align*}
+  [w^a]\left(\frac{w(pw+q)}{(w-1)^2(pw-q)}\right) 
+     &= \sum_{0\le b\le a}\frac{p+q}{p-q}
+     -\frac{2q}{p-q}\left(\frac{p}{q}\right)^b\\
+     &= (a+1)\frac{p+q}{p-q}-\frac{2q}{p-q}
+     \left(\frac{\left(\frac{p}{q}\right)^{a+1}-1}{\frac{p}{q}-1}\right)\\
+     &= \frac{a+1}{p-q}-\frac{2q}{p-q}
+     \left(\frac{p\left(\frac{p}{q}\right)^{a}-q}{p-q}\right)\\
+     &= \frac{a}{p-q}+\frac{p-q+2pq\left(\frac{p}{q}\right)^a+2q^2}{(p-q)^2}\\
+     &= \frac{a}{p-q}+\frac{p-q+2q^2}{(p-q)^2}
+     -\frac{2pq\left(\frac{p}{q}\right)^a}{(p-q)^2}\\
+\end{align*}
+
+Since $G_a(1)=1$, the mean of the original recurrence is given by the formula below, when $0\le a\le m$:
+
+\begin{align*}
+  g_a'(1) &= G_{m-a}'(1)-G_{m}'(1) \\
+    &= \frac{m-a}{p-q}-\frac{2pq\left(\frac{p}{q}\right)^{m-a}}{(p-q)^2}
+    - \frac{m}{p-q}+\frac{2pq\left(\frac{p}{q}\right)^{m}}{(p-q)^2}\\
+    &= \frac{a}{q-p}-\frac{2pq\left(
+  \left(\frac{p}{q}\right)^{m-a}-\left(\frac{p}{q}\right)^m\right)}{(q-p)^2}\\
+  &= \frac{a}{q-p}-\frac{2pq\left(\frac{p}{q}\right)^{m}\left(
+     \left(\frac{q}{p}\right)^{a}-1\right)}{(q-p)^2}\\
+\end{align*}
+
+The final mean over all $a$ must take into account the forced greedy move when $a=1$ and $a=n$, and also the binomial distribution of the $a$:
+
+\begin{align*}
+  g'(1) 
+    &= \frac{1}{2^{2m+2}}\sum_{0\le a\le 2m}{2m+2 \choose a+1}(1+g_a'(1))\\
+    &= \frac{1}{2^{2m+2}}\left(
+      \sum_{0\le a\le m}{2m+2 \choose a+1}(1+g_a'(1)) +
+      \sum_{0\le a\le m-1}{2m+2 \choose a+1}(1+g_a'(1))
+    \right)\\
+      &= \frac{1}{2^{2m+2}}\left( {2m+2\choose m+1}(1+g_m'(1))+
+      \sum_{0\le a\le m-1}2{2m+2 \choose a+1}(1+g_a'(1))
+    \right)
+\end{align*}
+
+There is no evident closed form for this expression; we can calculate it numerically though. For $p'$ in $(.001, .01, .1, .5, .9, .99, .999)$, the means are:
+
+$$g'(1) \sim (487.9, 492.3, 541.4, 973.7, 4853.4, 44688.2, 183063.4)$$
+
+The last subcase is when $n=2m-1$, which implies $g_{m-1}=g_m$. Defining once again $G_a=g_{m-a}/g_m$, we have $G_0=1$ and $G_1=1$. The recursion is the same as the previous case, $G_a=(1/zq) G_{a-1}-(p/q)G_{a-2}$, from which we can calculate the mean $g'(1)$:
+
+\begin{align*}
+  G &= \frac{-w+zq(1+w)}{qz+w(pwz-1)} \\
+  \left.\frac{dG}{dz}\right\rvert_{z=1}   
+  &= \frac{w^2(pw-q)}{(q+w(pw-1))^2} \\
+  [w^a]  \left.\frac{dG}{dz}\right\rvert_{z=1}   
+    &= \frac{a}{p-q}+\frac{q\left(1-\left(\frac{p}{q}\right)^a\right)}{(p-q)^2}\\
+  g_a'(1) &= \frac{a}{q-p}-\frac{q\left(\frac{p}{q}\right)^m
+             \left(\left(\frac{q}{p}\right)^a-1\right)}{(q-p)^2}\\
+  g'(1) &= \frac{1}{2^{2m+1}}
+      \sum_{0\le a\le m-1}2{2m+1 \choose a+1}(1+g_a'(1))\\
+\end{align*}
+
+\end{proof}
+
+\end{document}
+

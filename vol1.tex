@@ -1,0 +1,47 @@
+\documentclass[10pt]{book}
+\usepackage[utf8]{inputenc}
+\usepackage{verbatim}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{times}
+
+\begin{document}
+The Art of Computer Programming
+
+\chapter{1.1 Algorithms}
+
+\section{Exercise 1.1.1}
+
+The following sequence is the minimum:
+\begin{align*}
+t&\leftarrow a\\
+a&\leftarrow b\\
+b&\leftarrow c\\
+c&\leftarrow d\\
+d&\leftarrow t\\
+\end{align*}
+
+\section{Exercise 1.1.2}
+
+\begin{proof}
+After the start, step E1 can only be reached by step E3. However, after E3 has 
+finished, $m$ will have the previous value of $n$, and $n$ will have the
+remainder of the division of $m$ by $n$. The remainer will always be smaller
+than the divisor, by definition, so $n$ will be always smaller than $m$. 
+\qedhere
+\end{proof}
+
+\chapter{1.2 Mathematical Induction}
+
+\section{Exercise 1.2.1}
+
+Start by proving the truth of $P(0)$, and then proceed as usual.
+
+\section{Exercise 1.2.2}
+
+This is a recurrence with two variables: $a(n+1)=F(a(n),a(n-1))$. The 
+induction basis should have two elements, however it was proved only
+for $a(1)$. You should have proved either $a(0)$ or $a(2)$ to have a valid 
+proof.
+
+\end{document}
